@@ -11,92 +11,110 @@ using namespace std;
 м≥н€Ї м≥сц€ми два аргументи. .*/
 
 
-template<typename T>
-class Swap {
-private:
-	T a;
-	T b;
-public:
-	Swap() {}
-	Swap(T a, T b) {
-		this->a = a;
-		this->b = b;
-	}
+namespace swaping {
+	template<typename T>
+	class Swap {
+	private:
+		T a;
+		T b;
+	public:
+		Swap() {}
+		Swap(T a, T b) {
+			this->a = a;
+			this->b = b;
+		}
 
-	void consolInputAndSwap() {
-		cin >> *this;
-		cout << *this;
-		this->swap();
-		cout << *this;
-	}
-	void fileInputAndSwap(const string& file_name) {
-		ifstream fin(file_name);
-		if (fin.is_open()) {
-			fin >> this->a >> this->b;
+		void consolInputAndSwap() {
+			cin >> *this;
+			cout << *this;
+			this->swap();
+			cout << *this;
+		}
+		void fileInputAndSwap(const string& file_name) {
+			ifstream fin(file_name);
+			if (fin.is_open()) {
+				fin >> this->a >> this->b;
+				swap();
+				fin.close();
+			}
+			else {
+				cout << "file open error" << endl;
+			}
+		}
+		void randInputAndSwap() {
+			srand(time(NULL));
+			this->a = 97 + rand() % 25;
+			srand(time(NULL) / 2 * 3);
+			this->b = 97 + rand() % 25;
+
+			cout << "A = " << this->a << endl;
+			cout << "B = " << this->b << endl;
 			swap();
-			fin.close();
 		}
-		else {
-			cout << "file open error" << endl;
+
+		void swap() {
+			T temp = a;
+			a = b;
+			b = temp;
+			cout << "SWAP" << endl;
 		}
-	}
-	void randInputAndSwap() {
-		srand(time(NULL));
-		this->a = 97 + rand() % 25;
-		srand(time(NULL) / 2 * 3);
-		this->b = 97 + rand() % 25;
+		template<typename U>
+		friend istream& operator>>(istream& input, Swap<U>& obj);
+		template<typename U>
+		friend ostream& operator<<(ostream& output, Swap<U>& obj);
+	};
 
-		cout << "A = " << this->a << endl;
-		cout << "B = " << this->b << endl;
-		swap();
+	template<typename T>
+	istream& operator>>(istream& input, Swap<T>& obj) {
+		cout << "enter A: ";
+		input >> obj.a;
+		cout << "enter B: ";
+		input >> obj.b;
+		return input;
+	}
+	template<typename T>
+	ostream& operator<<(ostream& output, Swap<T>& obj) {
+		output << "A = " << obj.a << endl;
+		output << "B = " << obj.b << endl;
+		return output;
 	}
 
-	void swap() {
-		T temp = a;
-		a = b;
-		b = temp;
-		cout << "SWAP" << endl;
-	}
-	template<typename U>
-	friend istream& operator>>(istream& input, Swap<U>& obj);
-	template<typename U>
-	friend ostream& operator<<(ostream& output, Swap<U>& obj);
-};
+	void charSwap(char* a, char* b) {
+		const int a_size = strlen(a);
+		int b_size = strlen(b);
+		char* temp_a;
+		temp_a = new char[a_size];
+		char* temp_b;
+		temp_b = new char[b_size];
+		for (int i = 0; i < a_size; i++) {
+			temp_a[i] = a[i];
+		}
+		a = new char[b_size];
+		for (int i = 0; i < b_size; i++) {
+			a[i] = b[i];
+		}
+		b = new char[a_size];
+		for (int i = 0; i < a_size; i++) {
+			b[i] = temp_a[i];
+		}
 
-template<typename T>
-istream& operator>>(istream& input, Swap<T>& obj) {
-	cout << "enter A: ";
-	input >> obj.a;
-	cout << "enter B: ";
-	input >> obj.b;
-	return input;
+	}
 }
-template<typename T>
-ostream& operator<<(ostream& output, Swap<T>& obj) {
-	output << "A = " << obj.a << endl;
-	output << "B = " << obj.b << endl;
-	return output;
-}
 
-void charSwap(char* a, char* b) {
-	const int a_size = strlen(a);
-	int b_size = strlen(b);
-	char* temp_a;
-	temp_a = new char[a_size];
-	char* temp_b;
-	temp_b = new char[b_size];
-	for (int i = 0; i < a_size; i++) {
-		temp_a[i] = a[i];
-	}
-	a = new char[b_size];
-	for (int i = 0; i < b_size; i++) {
-		a[i] = b[i];
-	}
-	b = new char[a_size];
-	for (int i = 0; i < a_size; i++) {
-		b[i] = temp_a[i];
-	}
 
+using namespace swaping;
+
+void Task1()
+{
+	Swap<int> test;
+	cout << "consol input:\n";
+	test.consolInputAndSwap();
+	cout << "\nfile input:\n";
+	test.fileInputAndSwap("textFile.txt");
+	cout << test;
+	cout << "\nrand input\n";
+	test.randInputAndSwap();
+	cout << test;
 }
 
 int main()
