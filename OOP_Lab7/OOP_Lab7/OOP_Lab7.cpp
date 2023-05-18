@@ -101,9 +101,77 @@ namespace swaping {
 	}
 }
 
+/*Задача 2.3. Написати функцію-шаблон функцію впорядкування методом
+«Вставки».*/
+
+namespace sorting
+{
+	template <typename T>
+	void insertionSort(T arr[], int size) {
+		for (int i = 1; i < size; ++i) {
+			T key = arr[i];
+			int j = i - 1;
+
+			while (j >= 0 && arr[j] > key) {
+				arr[j + 1] = arr[j];
+				--j;
+			}
+
+			arr[j + 1] = key;
+		}
+	}
+
+	void charInsertionSort(char** arr, int size) {
+
+		for (int i = 1; i < size; ++i) {
+			char* key = arr[i];
+			int j = i - 1;
+
+			while (j >= 0 && *arr[j] > *key) {
+				arr[j + 1] = arr[j];
+				--j;
+			}
+
+			arr[j + 1] = key;
+		}
+	}
+
+	template <typename T>
+	void inputFromConsole(T arr[], int size) {
+		for (int i = 0; i < size; ++i) {
+			cout << "Enter element at index " << i << ": ";
+			cin >> arr[i];
+		}
+	}
+	template <typename T>
+	void inputFromFile(T arr[], int size, const string& filename) {
+		ifstream file(filename);
+
+		if (!file.is_open()) {
+			cout << "Failed to open file: " << filename << std::endl;
+			return;
+		}
+
+		for (int i = 0; i < size; ++i) {
+			if (!(file >> arr[i])) {
+				cout << "Error reading element at index " << i << " from file." << std::endl;
+				break;
+			}
+		}
+
+		file.close();
+	}
+	template <typename T>
+	void inputRandom(T* arr, int size, int limit) {
+		for (int i = 0; i < size; ++i) {
+			arr[i] = rand() % limit;
+		}
+	}
+}
+
+
 
 using namespace swaping;
-
 void Task1()
 {
 	Swap<int> test;
@@ -116,6 +184,50 @@ void Task1()
 	test.randInputAndSwap();
 	cout << test;
 }
+
+using namespace sorting;
+void Task2()
+{
+	const int size = 5;
+	int arr[size];
+
+	inputRandom(arr, size, 100);
+	for (int i = 0; i < size; i++) {
+		cout << arr[i] << '\t';
+	}
+	insertionSort(arr, size);
+
+	cout << "\nSorted\n";
+
+	for (int i = 0; i < size; i++) {
+		cout << arr[i] << '\t';
+	}
+
+	//const int size = 5;
+	//char arr[size][9] = { "qwerty__", "apple___", "dinosaur", "banana__", "traktor_" };
+	//char** dinamic_arr;
+	//dinamic_arr = new char* [size];
+	//for (int i = 0; i < size; i++) {
+	//	dinamic_arr[i] = new char[9];
+	//}
+	////dinamic_arr[][] = {"qwerty__", "apple___", "dinosaur", "banana__", "traktor_"};
+	//for (int i = 0; i < size; i++) {
+	//	for (int j = 0; j < 9; j++) {
+	//		dinamic_arr[i][j] = arr[i][j];
+	//	}
+	//}
+	//for (int i = 0; i < size; i++) {
+	//	cout << dinamic_arr[i] << '\t';
+	//}
+	//charInsertionSort(dinamic_arr, size);
+	//
+	//cout << "\nSorted\n";
+	//
+	//for (int i = 0; i < size; i++) {
+	//	cout << dinamic_arr[i] << '\t';
+	//}
+}
+
 
 int main()
 {
