@@ -4,12 +4,14 @@
 
 using namespace std;
 
+
 /*Розробити та реалізувати параметризовані функції або класи згідно варіантів.
 Передбачити введення початкових даних: з клавіатури, файлу та використовуючи
-датчик випадкових чисел.
-Задача 1.6. Написати родову функцію у вигляді функції-шаблон. Функція
-міняє місцями два аргументи. .*/
+датчик випадкових чисел.*/
 
+
+/*Задача 1.6.Написати родову функцію у вигляді функції - шаблон.Функція
+міняє місцями два аргументи. .*/
 
 namespace swaping {
 	template<typename T>
@@ -101,6 +103,7 @@ namespace swaping {
 	}
 }
 
+
 /*Задача 2.3. Написати функцію-шаблон функцію впорядкування методом
 «Вставки».*/
 
@@ -170,6 +173,235 @@ namespace sorting
 }
 
 
+/*Задача 3.6.Створити параметризованний клас бінарного дерева.З методами
+- додати елемент у дерево, проходження по дереву в спадному й у
+висхідному порядку.Здійснити пошук по дереву.*/
+
+template<typename T>
+class BinaryTree {
+private:
+	struct Node {
+		T data;
+		Node* left;
+		Node* right;
+
+		Node(const T& value) : data(value), left(nullptr), right(nullptr) {}
+	};
+
+	Node* root;
+
+	void addElement(Node*& node, const T& value) {
+		if (node == nullptr) {
+			node = new Node(value);
+		}
+		else if (value < node->data) {
+			addElement(node->left, value);
+		}
+		else {
+			addElement(node->right, value);
+		}
+	}
+
+	void inOrderTraversal(Node* node) {
+		if (node != nullptr) {
+			inOrderTraversal(node->left);
+			std::cout << node->data << " ";
+			inOrderTraversal(node->right);
+		}
+	}
+
+	void postOrderTraversal(Node* node) {
+		if (node != nullptr) {
+			postOrderTraversal(node->left);
+			postOrderTraversal(node->right);
+			std::cout << node->data << " ";
+		}
+	}
+
+	void preOrderTraversal(Node* node) {
+		if (node != nullptr) {
+			std::cout << node->data << " ";
+			preOrderTraversal(node->left);
+			preOrderTraversal(node->right);
+		}
+	}
+
+	Node* search(Node* node, const T& value) {
+		if (node == nullptr || node->data == value) {
+			return node;
+		}
+		else if (value < node->data) {
+			return search(node->left, value);
+		}
+		else {
+			return search(node->right, value);
+		}
+	}
+
+public:
+	BinaryTree() : root(nullptr) {}
+
+	void add(const T& value) {
+		addElement(root, value);
+	}
+
+	void traverseInOrder() {
+		inOrderTraversal(root);
+	}
+
+	void traversePostOrder() {
+		postOrderTraversal(root);
+	}
+
+	void traversePreOrder() {
+		preOrderTraversal(root);
+	}
+
+	bool contains(const T& value) {
+		return search(root, value) != nullptr;
+	}
+};
+
+/*Задача 4.3. Побудувати клас, що описує лінійний двох зв’язний список.
+Побудувати клас ітератор, що дозволяє проходити список.*/
+
+namespace linkedList
+{
+	template <typename T>
+	class Node {
+	public:
+		T data;
+		Node<T>* prev;
+		Node<T>* next;
+
+		Node(T value) : data(value), prev(nullptr), next(nullptr) {}
+	};
+
+	template <typename T>
+	class LinkedList {
+	private:
+		Node<T>* head;
+		Node<T>* tail;
+		int size;
+
+	public:
+		LinkedList() : head(nullptr), tail(nullptr), size(0) {}
+
+		Node<T>* getHead() {
+			return this->head;
+		}
+
+		void pushBack(T value) {
+			Node<T>* newNode = new Node<T>(value);
+			if (isEmpty()) {
+				head = newNode;
+				tail = newNode;
+			}
+			else {
+				tail->next = newNode;
+				newNode->prev = tail;
+				tail = newNode;
+			}
+			size++;
+		}
+
+		void pushFront(T value) {
+			Node<T>* newNode = new Node<T>(value);
+			if (isEmpty()) {
+				head = newNode;
+				tail = newNode;
+			}
+			else {
+				newNode->next = head;
+				head->prev = newNode;
+				head = newNode;
+			}
+			size++;
+		}
+
+		void popBack() {
+			if (isEmpty()) {
+				cout << "List is empty." << endl;
+				return;
+			}
+
+			Node<T>* nodeToRemove = tail;
+
+			if (head == tail) {
+				head = nullptr;
+				tail = nullptr;
+			}
+			else {
+				tail = tail->prev;
+				tail->next = nullptr;
+			}
+
+			delete nodeToRemove;
+			size--;
+		}
+
+		void popFront() {
+			if (isEmpty()) {
+				std::cout << "List is empty." << std::endl;
+				return;
+			}
+
+			Node<T>* nodeToRemove = head;
+
+			if (head == tail) {
+				head = nullptr;
+				tail = nullptr;
+			}
+			else {
+				head = head->next;
+				head->prev = nullptr;
+			}
+
+			delete nodeToRemove;
+			size--;
+		}
+
+		bool isEmpty() const {
+			return (size == 0);
+		}
+
+		int getSize() const {
+			return size;
+		}
+
+		void printList() const {
+			Node<T>* current = head;
+			while (current != nullptr) {
+				std::cout << current->data << " ";
+				current = current->next;
+			}
+			std::cout << std::endl;
+		}
+	};
+
+	template <typename T>
+	class LinkedListIterator {
+	private:
+		Node<T>* currentNode;
+
+	public:
+		LinkedListIterator(Node<T>* node) : currentNode(node) {}
+
+		T& operator*() const {
+			return currentNode->data;
+		}
+
+		LinkedListIterator<T>& operator++() {
+			currentNode = currentNode->next;
+			return *this;
+		}
+
+		bool operator!=(const LinkedListIterator<T>& other) const {
+			return (currentNode != other.currentNode);
+		}
+	};
+
+}
 
 using namespace swaping;
 void Task1()
@@ -228,10 +460,62 @@ void Task2()
 	//}
 }
 
+void Task3()
+{
+	BinaryTree<int> binaryTree;
+
+	binaryTree.add(5);
+	binaryTree.add(3);
+	binaryTree.add(7);
+	binaryTree.add(2);
+	binaryTree.add(4);
+	binaryTree.add(6);
+	binaryTree.add(8);
+
+	cout << "In-order traversal: ";
+	binaryTree.traverseInOrder();
+	cout << endl;
+
+	cout << "Post-order traversal: ";
+	binaryTree.traversePostOrder();
+	cout << endl;
+
+	cout << "Pre-order traversal: ";
+	binaryTree.traversePreOrder();
+	cout << endl;
+
+	int searchValue = 4;
+	cout << "Tree contains " << searchValue << ": " << (binaryTree.contains(searchValue) ? "true" : "false") << endl;
+
+	searchValue = 9;
+	cout << "Tree contains " << searchValue << ": " << (binaryTree.contains(searchValue) ? "true" : "false") << endl;
+
+
+}
+
+using namespace linkedList;
+void Task4()
+{
+	LinkedList<int> list;
+	list.pushBack(1);
+	list.pushBack(2);
+	list.pushBack(3);
+
+	cout << "List: ";
+	list.printList();
+
+	cout << "Using Iterator: ";
+	for (LinkedListIterator<int> it = LinkedListIterator<int>(list.getHead()); it != nullptr; ++it) {
+		cout << *it << " ";
+	}
+	cout << endl;
+
+}
+
 
 int main()
 {
-	/*int choise = 0;
+	int choise = 0;
 	cout << "enter number:\n" << "1. Task1;\n" << "2. Task2;\n" << "3. Task3;\n" << "4. Task4\n";
 	cin >> choise;
 	if (choise == 1) {
@@ -247,6 +531,6 @@ int main()
 		Task4();
 	}
 	else
-		cout << "incorect input";*/
+		cout << "incorect input";
 	return 0;
 }
