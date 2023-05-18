@@ -151,13 +151,13 @@ namespace sorting
 		ifstream file(filename);
 
 		if (!file.is_open()) {
-			cout << "Failed to open file: " << filename << std::endl;
+			cout << "Failed to open file: " << filename << endl;
 			return;
 		}
 
 		for (int i = 0; i < size; ++i) {
 			if (!(file >> arr[i])) {
-				cout << "Error reading element at index " << i << " from file." << std::endl;
+				cout << "Error reading element at index " << i << " from file." << endl;
 				break;
 			}
 		}
@@ -202,27 +202,19 @@ private:
 		}
 	}
 
-	void inOrderTraversal(Node* node) {
+	void fromSmallerTraversal(Node* node) {
 		if (node != nullptr) {
-			inOrderTraversal(node->left);
-			std::cout << node->data << " ";
-			inOrderTraversal(node->right);
+			fromSmallerTraversal(node->left);
+			cout << node->data << " ";
+			fromSmallerTraversal(node->right);
 		}
 	}
 
-	void postOrderTraversal(Node* node) {
+	void fromBiggerTraversal(Node* node) {
 		if (node != nullptr) {
-			postOrderTraversal(node->left);
-			postOrderTraversal(node->right);
-			std::cout << node->data << " ";
-		}
-	}
-
-	void preOrderTraversal(Node* node) {
-		if (node != nullptr) {
-			std::cout << node->data << " ";
-			preOrderTraversal(node->left);
-			preOrderTraversal(node->right);
+			fromBiggerTraversal(node->right);
+			cout << node->data << " ";
+			fromBiggerTraversal(node->left);
 		}
 	}
 
@@ -245,16 +237,12 @@ public:
 		addElement(root, value);
 	}
 
-	void traverseInOrder() {
-		inOrderTraversal(root);
+	void traverseFromSmaller() {
+		fromSmallerTraversal(root);
 	}
 
-	void traversePostOrder() {
-		postOrderTraversal(root);
-	}
-
-	void traversePreOrder() {
-		preOrderTraversal(root);
+	void traverseFromBigger() {
+		fromBiggerTraversal(root);
 	}
 
 	bool contains(const T& value) {
@@ -472,16 +460,12 @@ void Task3()
 	binaryTree.add(6);
 	binaryTree.add(8);
 
-	cout << "In-order traversal: ";
-	binaryTree.traverseInOrder();
+	cout << "Going through the tree in ascending order ";
+	binaryTree.traverseFromSmaller();
 	cout << endl;
 
-	cout << "Post-order traversal: ";
-	binaryTree.traversePostOrder();
-	cout << endl;
-
-	cout << "Pre-order traversal: ";
-	binaryTree.traversePreOrder();
+	cout << "Going through the tree in descending order: ";
+	binaryTree.traverseFromBigger();
 	cout << endl;
 
 	int searchValue = 4;
